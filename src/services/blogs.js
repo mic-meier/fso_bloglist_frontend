@@ -8,8 +8,20 @@ const setToken = (newToken) => {
 };
 
 const getAll = () => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+  const req = axios.get(baseUrl);
+  return req.then((res) => res.data);
 };
 
-export default { getAll, setToken };
+const createBlog = async (blogObject) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const res = await axios.post(baseUrl, blogObject, config);
+  return res.data;
+};
+
+export default {
+  getAll,
+  createBlog,
+  setToken,
+};
