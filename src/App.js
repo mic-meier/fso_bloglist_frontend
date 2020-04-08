@@ -27,6 +27,42 @@ const App = () => {
     }
   }, []);
 
+  const handleBlogLike = async (blogObject) => {
+    console.log("blogObject", blogObject);
+    const id = blogObject.id;
+    const user = blogObject.user.id || blogObject.user;
+
+    const blogToUpdate = {
+      user: user,
+      likes: blogObject.likes + 1,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url,
+    };
+
+    console.log("blogToUpdate", blogToUpdate);
+
+    try {
+      const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
+
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+
+      setNotificationMessage(
+        `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`
+      );
+      setNotificationClass("notification");
+      setTimeout(() => {
+        setNotificationMessage(null);
+      }, 2000);
+    } catch (error) {
+      setNotificationMessage(error.message);
+      setNotificationClass("error");
+      setTimeout(() => {
+        setNotificationMessage(null);
+      }, 2000);
+    }
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -65,7 +101,7 @@ const App = () => {
       setBlogs(blogs.concat(returnedBlog));
 
       setNotificationMessage(
-        `A new blog "${returnedBlog.title} by ${returnedBlog.author} has been added`
+        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} has been added`
       );
       setNotificationClass("notification");
       setTimeout(() => {
@@ -73,7 +109,6 @@ const App = () => {
       }, 2000);
     } catch (error) {
       setNotificationClass("error");
-      console.log("error", error);
       setNotificationMessage("Blog details missing");
       setTimeout(() => {
         setNotificationMessage(null);
@@ -112,7 +147,6 @@ const App = () => {
 
   const blogForm = () => (
     <Toggleable buttonLabel="new note" ref={blogFormRef}>
-      <h2>Add a Blog</h2>
       <BlogForm createBlog={createBlog} />
     </Toggleable>
   );
@@ -145,7 +179,7 @@ const App = () => {
       <br />
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} handleBlogLike={handleBlogLike} />
         ))}
       </div>
     </div>
