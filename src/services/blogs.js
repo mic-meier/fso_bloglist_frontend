@@ -7,9 +7,9 @@ const setToken = (newToken) => {
   token = `bearer ${newToken}`;
 };
 
-const getAll = () => {
-  const req = axios.get(baseUrl);
-  return req.then((res) => res.data);
+const getAll = async () => {
+  const res = await axios.get(baseUrl);
+  return res.data;
 };
 
 const createBlog = async (blogObject) => {
@@ -17,6 +17,14 @@ const createBlog = async (blogObject) => {
     headers: { Authorization: token },
   };
   const res = await axios.post(baseUrl, blogObject, config);
+  return res.data;
+};
+
+const deleteBlog = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const res = await axios.delete(`${baseUrl}/${id}`, config);
   return res.data;
 };
 
@@ -31,6 +39,7 @@ const likeBlog = async (blogObject, id) => {
 export default {
   getAll,
   createBlog,
+  deleteBlog,
   likeBlog,
   setToken,
 };

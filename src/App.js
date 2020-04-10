@@ -27,40 +27,12 @@ const App = () => {
     }
   }, []);
 
-  const handleBlogLike = async (blogObject) => {
-    console.log("blogObject", blogObject);
-    const id = blogObject.id;
-    const user = blogObject.user.id || blogObject.user;
-
-    const blogToUpdate = {
-      user: user,
-      likes: blogObject.likes + 1,
-      author: blogObject.author,
-      title: blogObject.title,
-      url: blogObject.url,
-    };
-
-    console.log("blogToUpdate", blogToUpdate);
-
-    try {
-      const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
-
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
-
-      setNotificationMessage(
-        `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`
-      );
-      setNotificationClass("notification");
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 2000);
-    } catch (error) {
-      setNotificationMessage(error.message);
-      setNotificationClass("error");
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 2000);
-    }
+  const showMessage = (message, className) => {
+    setNotificationMessage(message);
+    setNotificationClass(className);
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 2000);
   };
 
   const handleLogin = async (event) => {
@@ -77,11 +49,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (error) {
-      setNotificationClass("error");
-      setNotificationMessage("Incorrect credentials");
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 2000);
+      showMessage("Incorrect credentials", "error");
       setUsername("");
       setPassword("");
     }
@@ -100,19 +68,60 @@ const App = () => {
 
       setBlogs(blogs.concat(returnedBlog));
 
-      setNotificationMessage(
-        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} has been added`
+      showMessage(
+        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} has been added`,
+        "notifiation"
       );
-      setNotificationClass("notification");
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 2000);
     } catch (error) {
-      setNotificationClass("error");
-      setNotificationMessage("Blog details missing");
-      setTimeout(() => {
-        setNotificationMessage(null);
-      }, 2000);
+      showMessage("Blog details missing", "error");
+    }
+  };
+
+  const likeBlog = async (blogObject) => {
+    const id = blogObject.id;
+    const user = blogObject.user.id || blogObject.user;
+
+    const blogToUpdate = {
+      user: user,
+      likes: blogObject.likes + 1,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url,
+    };
+
+    try {
+      const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
+
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+
+      showMessage(
+        `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`,
+        "notification"
+      );
+    } catch (error) {
+      showMessage(error.message, "error");
+    }
+  };
+
+  const deleteBlog = async (blogObject) => {
+    const blogToDelete = blogObject;
+    if (
+      window.confirm(
+        `Remove blog "${blogToDelete.title} by ${blogToDelete.author}"?`
+      )
+    ) {
+      try {
+        await blogService.deleteBlog(blogToDelete.id);
+
+        setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+
+        showMessage(
+          `Blog "${blogToDelete.title} by ${blogToDelete.author} removed`,
+          "notification"
+        );
+      } catch (error) {
+        showMessage(error.message, "error");
+      }
     }
   };
 
@@ -189,7 +198,13 @@ const App = () => {
             return 0;
           })
           .map((blog) => (
-            <Blog key={blog.id} blog={blog} handleBlogLike={handleBlogLike} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+              user={user}
+            />
           ))}
       </div>
     </div>
