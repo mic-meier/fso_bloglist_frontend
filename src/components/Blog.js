@@ -18,13 +18,13 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
   };
 
   const standardView = (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="standardview">
       {blog.title} {blog.author} <button onClick={handleClick}>view</button>
     </div>
   );
 
   const detailedView = (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="detailedView">
       <div>
         {blog.title} by {blog.author}{" "}
         <button onClick={handleClick}>hide</button>
