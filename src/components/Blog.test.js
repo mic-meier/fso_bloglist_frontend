@@ -5,6 +5,7 @@ import Blog from "./Blog";
 
 describe("<Blog />", () => {
   let component;
+  let mockLikeHandler;
 
   beforeEach(() => {
     const blog = {
@@ -25,7 +26,11 @@ describe("<Blog />", () => {
       id: 1,
     };
 
-    component = render(<Blog blog={blog} user={user} />);
+    mockLikeHandler = jest.fn();
+
+    component = render(
+      <Blog blog={blog} user={user} likeBlog={mockLikeHandler} />
+    );
   });
 
   test("renders blog title and author, but does not render url and number of likes", () => {
@@ -43,5 +48,16 @@ describe("<Blog />", () => {
     expect(component.container).toHaveTextContent("Testing Author");
     expect(component.container).toHaveTextContent("Testing URL");
     expect(component.container).toHaveTextContent("likes");
+  });
+
+  test("fires event handler for handling likes twice if button is clicked twice", () => {
+    const detailButton = component.container.querySelector(".detailsButton");
+    fireEvent.click(detailButton);
+
+    const likeButton = component.container.querySelector(".likeButton");
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+
+    expect(mockLikeHandler.mock.calls).toHaveLength(2);
   });
 });
