@@ -19,7 +19,10 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
 
   const standardView = (
     <div style={blogStyle} className="standardview">
-      {blog.title} {blog.author} <button onClick={handleClick}>view</button>
+      {blog.title} {blog.author}{" "}
+      <button onClick={handleClick} className="detailsButton">
+        view
+      </button>
     </div>
   );
 
@@ -27,7 +30,9 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
     <div style={blogStyle} className="detailedView">
       <div>
         {blog.title} by {blog.author}{" "}
-        <button onClick={handleClick}>hide</button>
+        <button onClick={handleClick} className="hideButton">
+          hide
+        </button>
       </div>
       <div>{blog.url}</div>
       <div>
