@@ -35,7 +35,7 @@ describe("Blog app", function () {
     });
   });
 
-  describe.only("When logged in", function () {
+  describe("When logged in", function () {
     beforeEach(function () {
       cy.login({ username: "Batman", password: "Selina" });
     });
@@ -78,6 +78,19 @@ describe("Blog app", function () {
         cy.contains("Testblog 3 Testauthor 3").contains("view").click();
         cy.contains("delete").click();
         cy.get("html").should("not.contain", "Testblog 3 Testauthor 3");
+      });
+
+      it("a blog can not be deleted by a user who is not the owner of the blog entry", function () {
+        const user = {
+          username: "Robin",
+          name: "Dick Grayson",
+          password: "Pamela",
+        };
+        cy.request("POST", "http://localhost:3003/api/users", user);
+        cy.visit("http://localhost:3000");
+        cy.get("#logoutbutton").click();
+        cy.login({ username: "Robin", password: "Pamela" });
+        cy.get("html").should("not.contain", "delete");
       });
     });
   });
