@@ -55,23 +55,38 @@ describe("Blog app", function () {
           title: "Testblog 1",
           author: "Testauthor 1",
           url: "TestURL 1",
+          likes: 1,
         });
         cy.createBlog({
           title: "Testblog 2",
           author: "Testauthor 2",
           url: "TestURL 2",
+          likes: 3,
         });
         cy.createBlog({
           title: "Testblog 3",
           author: "Testauthor 3",
           url: "TestURL 3",
+          likes: 2,
         });
       });
 
       it("a blog can be liked", function () {
         cy.contains("Testblog 2 Testauthor 2").contains("view").click();
         cy.contains("like").click();
-        cy.contains("1 likes");
+        cy.contains("4 likes");
+      });
+
+      it.only("blogs are sorted by most likes", function () {
+        cy.contains("Testblog 1").contains("view").click();
+        cy.contains("Testblog 2").contains("view").click();
+        cy.contains("Testblog 3").contains("view").click();
+        // cy.get(".blogs").first().should("contain", "Testblog 2");
+        cy.get(".blogs").then((blogs) => {
+          cy.wrap(blogs).eq(0).should("contain", "Testblog 2");
+          cy.wrap(blogs).eq(1).should("contain", "Testblog 3");
+          cy.wrap(blogs).eq(2).should("contain", "Testblog 1");
+        });
       });
 
       it("a blog can be deleted by the user", function () {

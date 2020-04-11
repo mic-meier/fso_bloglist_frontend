@@ -49,7 +49,9 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
     </div>
   );
 
-  return <div>{showDetails ? detailedView : standardView}</div>;
+  return (
+    <div className="blogs">{showDetails ? detailedView : standardView}</div>
+  );
 };
 
 Blog.propTypes = {
