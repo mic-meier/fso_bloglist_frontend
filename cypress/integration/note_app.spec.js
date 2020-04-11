@@ -73,6 +73,12 @@ describe("Blog app", function () {
         cy.contains("like").click();
         cy.contains("1 likes");
       });
+
+      it("a blog can be deleted by the user", function () {
+        cy.contains("Testblog 3 Testauthor 3").contains("view").click();
+        cy.contains("delete").click();
+        cy.get("html").should("not.contain", "Testblog 3 Testauthor 3");
+      });
     });
   });
 });
