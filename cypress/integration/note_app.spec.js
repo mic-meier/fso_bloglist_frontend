@@ -48,5 +48,31 @@ describe("Blog app", function () {
       cy.get("#submit-button").click();
       cy.contains("Test Blog Test Author");
     });
+
+    describe("and blogs exist", function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: "Testblog 1",
+          author: "Testauthor 1",
+          url: "TestURL 1",
+        });
+        cy.createBlog({
+          title: "Testblog 2",
+          author: "Testauthor 2",
+          url: "TestURL 2",
+        });
+        cy.createBlog({
+          title: "Testblog 3",
+          author: "Testauthor 3",
+          url: "TestURL 3",
+        });
+      });
+
+      it("a blog can be liked", function () {
+        cy.contains("Testblog 2 Testauthor 2").contains("view").click();
+        cy.contains("like").click();
+        cy.contains("1 likes");
+      });
+    });
   });
 });
