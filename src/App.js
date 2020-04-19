@@ -6,17 +6,29 @@ import Toggleable from "./components/Toggleable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
+// redux rewrite imports
+import { useDispatch, useSelector } from "react-redux";
+import { initializeBlogs, createABlog } from "./redux/reducers/blogReducer";
+import { setNotification } from "./redux/reducers/notificationReducer";
+
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [notificationClass, setNotificationClass] = useState("notification");
-  const [notificationMessage, setNotificationMessage] = useState(null);
+
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs));
+  // }, []);
+
+  // Initialize blogs in redux store
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    dispatch(initializeBlogs());
+  }, [dispatch]);
+
+  const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("loggedInUser");
@@ -26,14 +38,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-
-  const showMessage = (message, className) => {
-    setNotificationMessage(message);
-    setNotificationClass(className);
-    setTimeout(() => {
-      setNotificationMessage(null);
-    }, 2000);
-  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -49,7 +53,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (error) {
-      showMessage("Incorrect credentials", "error");
+      setNotification("Incorrect credentials", "error", 2);
       setUsername("");
       setPassword("");
     }
@@ -64,65 +68,69 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
 
     try {
-      const returnedBlog = await blogService.createBlog(blogObject);
-
-      setBlogs(blogs.concat(returnedBlog));
-
-      showMessage(
-        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} has been added`,
-        "notifiation"
+      dispatch(createABlog(blogObject));
+      dispatch(
+        setNotification(
+          `A new blog ${blogObject.title} by ${blogObject.author} has been added`,
+          "notification",
+          2
+        )
       );
     } catch (error) {
-      showMessage("Blog details missing", "error");
+      setNotification("Blog details missing", "error", 2);
     }
   };
 
   const likeBlog = async (blogObject) => {
-    const id = blogObject.id;
-    const user = blogObject.user.id || blogObject.user;
+    // TODO
+    // const id = blogObject.id;
+    // const user = blogObject.user.id || blogObject.user;
 
-    const blogToUpdate = {
-      user: user,
-      likes: blogObject.likes + 1,
-      author: blogObject.author,
-      title: blogObject.title,
-      url: blogObject.url,
-    };
+    // const blogToUpdate = {
+    //   user: user,
+    //   likes: blogObject.likes + 1,
+    //   author: blogObject.author,
+    //   title: blogObject.title,
+    //   url: blogObject.url,
+    // };
 
-    try {
-      const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
+    // try {
+    //   const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
 
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+    //   setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
 
-      showMessage(
-        `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`,
-        "notification"
-      );
-    } catch (error) {
-      showMessage(error.message, "error");
-    }
+    //   showMessage(
+    //     `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`,
+    //     "notification"
+    //   );
+    // } catch (error) {
+    //   showMessage(error.message, "error");
+    // }
+    return 1;
   };
 
   const deleteBlog = async (blogObject) => {
-    const blogToDelete = blogObject;
-    if (
-      window.confirm(
-        `Remove blog "${blogToDelete.title} by ${blogToDelete.author}"?`
-      )
-    ) {
-      try {
-        await blogService.deleteBlog(blogToDelete.id);
+    // TODO
+    // const blogToDelete = blogObject;
+    // if (
+    //   window.confirm(
+    //     `Remove blog "${blogToDelete.title} by ${blogToDelete.author}"?`
+    //   )
+    // ) {
+    //   try {
+    //     await blogService.deleteBlog(blogToDelete.id);
 
-        setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+    //     setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
 
-        showMessage(
-          `Blog "${blogToDelete.title} by ${blogToDelete.author} removed`,
-          "notification"
-        );
-      } catch (error) {
-        showMessage(error.message, "error");
-      }
-    }
+    //     showMessage(
+    //       `Blog "${blogToDelete.title} by ${blogToDelete.author} removed`,
+    //       "notification"
+    //     );
+    //   } catch (error) {
+    //     showMessage(error.message, "error");
+    //   }
+    // }
+    return 2;
   };
 
   const loginForm = () => (
@@ -167,10 +175,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification
-          notificationClass={notificationClass}
-          notificationMessage={notificationMessage}
-        />
+        <Notification />
         {loginForm()}
       </div>
     );
@@ -179,10 +184,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification
-        notificationClass={notificationClass}
-        notificationMessage={notificationMessage}
-      />
+      <Notification />
       <div>
         Logged in as: {user.username}
         <button id="logoutbutton" onClick={handleLogOut}>
