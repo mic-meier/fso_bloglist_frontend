@@ -81,7 +81,6 @@ describe("Blog app", function () {
         cy.contains("Testblog 1").contains("view").click();
         cy.contains("Testblog 2").contains("view").click();
         cy.contains("Testblog 3").contains("view").click();
-        // cy.get(".blogs").first().should("contain", "Testblog 2");
         cy.get(".blogs").then((blogs) => {
           cy.wrap(blogs).eq(0).should("contain", "Testblog 2");
           cy.wrap(blogs).eq(1).should("contain", "Testblog 3");
