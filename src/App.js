@@ -8,7 +8,11 @@ import loginService from "./services/login";
 
 // redux rewrite imports
 import { useDispatch, useSelector } from "react-redux";
-import { initializeBlogs, createABlog } from "./redux/reducers/blogReducer";
+import {
+  initializeBlogs,
+  createABlog,
+  likeABlog,
+} from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
 
 const App = () => {
@@ -82,30 +86,25 @@ const App = () => {
   };
 
   const likeBlog = async (blogObject) => {
-    // TODO
-    // const id = blogObject.id;
-    // const user = blogObject.user.id || blogObject.user;
+    const blogToUpdate = {
+      user: blogObject.user.id || blogObject.user,
+      likes: blogObject.likes + 1,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url,
+    };
 
-    // const blogToUpdate = {
-    //   user: user,
-    //   likes: blogObject.likes + 1,
-    //   author: blogObject.author,
-    //   title: blogObject.title,
-    //   url: blogObject.url,
-    // };
+    try {
+      dispatch(likeABlog(blogToUpdate, blogObject.id));
 
-    // try {
-    //   const returnedBlog = await blogService.likeBlog(blogToUpdate, id);
-
-    //   setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
-
-    //   showMessage(
-    //     `You have liked "${returnedBlog.title}" by ${returnedBlog.author}`,
-    //     "notification"
-    //   );
-    // } catch (error) {
-    //   showMessage(error.message, "error");
-    // }
+      setNotification(
+        `You have liked "${blogObject.title}" by ${blogObject.author}`,
+        "notification",
+        2
+      );
+    } catch (error) {
+      setNotification(error.message, "error", 2);
+    }
     return 1;
   };
 

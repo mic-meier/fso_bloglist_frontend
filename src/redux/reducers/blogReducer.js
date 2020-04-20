@@ -8,6 +8,11 @@ const blogReducer = (state = [], action) => {
       const blog = action.data;
       return [...state, blog];
     }
+    case "LIKE": {
+      return state.map((blog) =>
+        blog.id !== action.data.id ? blog : action.data
+      );
+    }
     default:
       return state;
   }
@@ -30,6 +35,16 @@ export const createABlog = (data) => {
     dispatch({
       type: "CREATE",
       data: newBlog,
+    });
+  };
+};
+
+export const likeABlog = (data, id) => {
+  return async (dispatch) => {
+    const likedBlog = await blogService.likeBlog(data, id);
+    dispatch({
+      type: "LIKE",
+      data: likedBlog,
     });
   };
 };
