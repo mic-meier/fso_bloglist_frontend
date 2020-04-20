@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   initializeBlogs,
   createABlog,
+  deleteABlog,
   likeABlog,
 } from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
@@ -20,10 +21,6 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  // useEffect(() => {
-  //   blogService.getAll().then((blogs) => setBlogs(blogs));
-  // }, []);
 
   // Initialize blogs in redux store
   const dispatch = useDispatch();
@@ -81,11 +78,11 @@ const App = () => {
         )
       );
     } catch (error) {
-      setNotification("Blog details missing", "error", 2);
+      dispatch(setNotification("Blog details missing", "error", 2));
     }
   };
 
-  const likeBlog = async (blogObject) => {
+  const likeBlog = (blogObject) => {
     const blogToUpdate = {
       user: blogObject.user.id || blogObject.user,
       likes: blogObject.likes + 1,
@@ -97,39 +94,38 @@ const App = () => {
     try {
       dispatch(likeABlog(blogToUpdate, blogObject.id));
 
-      setNotification(
-        `You have liked "${blogObject.title}" by ${blogObject.author}`,
-        "notification",
-        2
+      dispatch(
+        setNotification(
+          `You have liked "${blogObject.title}" by ${blogObject.author}`,
+          "notification",
+          2
+        )
       );
     } catch (error) {
-      setNotification(error.message, "error", 2);
+      dispatch(setNotification(error.message, "error", 2));
     }
-    return 1;
   };
 
-  const deleteBlog = async (blogObject) => {
-    // TODO
-    // const blogToDelete = blogObject;
-    // if (
-    //   window.confirm(
-    //     `Remove blog "${blogToDelete.title} by ${blogToDelete.author}"?`
-    //   )
-    // ) {
-    //   try {
-    //     await blogService.deleteBlog(blogToDelete.id);
+  const deleteBlog = (blogObject) => {
+    if (
+      window.confirm(
+        `Remove blog "${blogObject.title} by ${blogObject.author}"?`
+      )
+    ) {
+      try {
+        dispatch(deleteABlog(blogObject.id));
 
-    //     setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
-
-    //     showMessage(
-    //       `Blog "${blogToDelete.title} by ${blogToDelete.author} removed`,
-    //       "notification"
-    //     );
-    //   } catch (error) {
-    //     showMessage(error.message, "error");
-    //   }
-    // }
-    return 2;
+        dispatch(
+          setNotification(
+            `Blog "${blogObject.title} by ${blogObject.author} removed`,
+            "notification",
+            2
+          )
+        );
+      } catch (error) {
+        dispatch(setNotification(error.message, "error", 2));
+      }
+    }
   };
 
   const loginForm = () => (

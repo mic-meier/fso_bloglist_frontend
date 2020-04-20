@@ -7,9 +7,7 @@ const Notification = () => {
   return (
     <>
       {notification.display ? (
-        <div className={notification.className}>
-          {notification.message}Hello
-        </div>
+        <div className={notification.className}>{notification.message}</div>
       ) : (
         ""
       )}

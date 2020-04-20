@@ -13,6 +13,9 @@ const blogReducer = (state = [], action) => {
         blog.id !== action.data.id ? blog : action.data
       );
     }
+    case "DELETE": {
+      return state.filter((blog) => blog.id !== action.id);
+    }
     default:
       return state;
   }
@@ -45,6 +48,16 @@ export const likeABlog = (data, id) => {
     dispatch({
       type: "LIKE",
       data: likedBlog,
+    });
+  };
+};
+
+export const deleteABlog = (id) => {
+  return async (dispatch) => {
+    await blogService.deleteBlog(id);
+    dispatch({
+      type: "DELETE",
+      id,
     });
   };
 };
