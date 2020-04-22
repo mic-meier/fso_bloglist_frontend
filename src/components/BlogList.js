@@ -7,7 +7,7 @@ import Blog from "./Blog";
 const BlogList = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.user);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const likeBlog = (blogObject) => {
     const blogToUpdate = {
@@ -73,7 +73,7 @@ const BlogList = () => {
             blog={blog}
             likeBlog={likeBlog}
             deleteBlog={deleteBlog}
-            user={user}
+            user={loggedInUser}
           />
         ))}
     </div>

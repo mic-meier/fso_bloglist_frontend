@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoggedInUser = (user) => {
+const LoggedInUser = ({ user }) => {
   const handleLogOut = () => {
     window.localStorage.removeItem("loggedInUser");
     window.location.reload();
@@ -8,7 +8,7 @@ const LoggedInUser = (user) => {
 
   return (
     <div>
-      Logged in as: {user.username}
+      <div>Logged in as: {user.name}</div>
       <button id="logoutbutton" onClick={handleLogOut}>
         Log Out
       </button>

@@ -1,22 +1,36 @@
 import React, { useEffect } from "react";
+import {
+  Switch,
+  Route,
+  /*Link,
+  useRouteMatch,
+  useHistory,*/
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import BlogForm from "./components/BlogForm";
 import BlogList from "./components/BlogList";
 import LoggedInUser from "./components/LoggedInUser";
 import Loginform from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
-import { useDispatch, useSelector } from "react-redux";
+import UsersList from "./components/UsersList";
 import { initializeBlogs, createABlog } from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
 import { getLoggedInUser } from "./redux/reducers/loggedInUserReducer";
+import { initializeUsers } from "./redux/reducers/userReducer";
 
 const App = () => {
   // Initialize blogs and userin redux store
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const loggedInUser = useSelector((state) => state.loggedInUser);
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(initializeBlogs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(initializeUsers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -43,7 +57,7 @@ const App = () => {
   const blogFormRef = React.createRef();
 
   // User not logged in
-  if (user === null) {
+  if (loggedInUser === null) {
     return (
       <div>
         <Notification />
@@ -56,12 +70,19 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification />
-      <LoggedInUser user={user.username} />
-      <Toggleable buttonLabel="new note" ref={blogFormRef}>
-        <BlogForm createBlog={createBlog} />
-      </Toggleable>
-      <BlogList />
+      <LoggedInUser user={loggedInUser} />
+      <Switch>
+        <Route path="/users">
+          <UsersList users={users} />
+        </Route>
+        <Route path="/">
+          <Notification />
+          <Toggleable buttonLabel="new note" ref={blogFormRef}>
+            <BlogForm createBlog={createBlog} />
+          </Toggleable>
+          <BlogList />
+        </Route>
+      </Switch>
     </div>
   );
 };
