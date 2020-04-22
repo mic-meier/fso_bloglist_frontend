@@ -36,9 +36,11 @@ const App = () => {
         <Route path="/users">
           <UsersContainer />
         </Route>
+        <Route path="/blogs">
+          <BlogContainer />
+        </Route>
         <Route path="/">
           <Notification />
-          <BlogContainer />
         </Route>
       </Switch>
     </div>

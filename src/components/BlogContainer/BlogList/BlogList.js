@@ -1,7 +1,7 @@
 import React from "react";
-import Blog from "../Blog/Blog";
+import Blog from "./Blog/Blog";
 
-const BlogList = ({ blogs, loggedInUser, likeBlog, deleteBlog }) => {
+const BlogList = ({ blogs }) => {
   return (
     <div>
       {blogs
@@ -15,13 +15,7 @@ const BlogList = ({ blogs, loggedInUser, likeBlog, deleteBlog }) => {
           return 0;
         })
         .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            likeBlog={likeBlog}
-            deleteBlog={deleteBlog}
-            user={loggedInUser}
-          />
+          <Blog key={blog.id} blog={blog} />
         ))}
     </div>
   );

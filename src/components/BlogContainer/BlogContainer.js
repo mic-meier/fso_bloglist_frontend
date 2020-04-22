@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
 import {
   initializeBlogs,
   createABlog,
@@ -7,6 +8,7 @@ import {
   deleteABlog,
 } from "../../redux/reducers/blogReducer";
 import { setNotification } from "../../redux/reducers/notificationReducer";
+import BlogDetails from "./BlogDetails/BlogDetails";
 import BlogForm from "./BlogForm/BlogForm";
 import BlogList from "./BlogList/BlogList";
 import Toggleable from "./Toggleable/Toggleable";
@@ -15,6 +17,12 @@ const BlogContainer = () => {
   const blogs = useSelector((state) => state.blogs);
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const match = useRouteMatch();
+  const matchBlog = useRouteMatch("/blogs/:id");
+  const blog = matchBlog
+    ? blogs.find((blog) => blog.id === matchBlog.params.id)
+    : null;
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -79,6 +87,7 @@ const BlogContainer = () => {
             2
           )
         );
+        history.push("/blogs");
       } catch (error) {
         dispatch(setNotification(error.message, "error", 2));
       }
@@ -86,17 +95,18 @@ const BlogContainer = () => {
   };
 
   return (
-    <div>
-      <Toggleable buttonLabel="new note" ref={blogFormRef}>
-        <BlogForm createBlog={createBlog} />
-      </Toggleable>
-      <BlogList
-        blogs={blogs}
-        loggedInUser={loggedInUser}
-        likeBlog={likeBlog}
-        deleteBlog={deleteBlog}
-      />
-    </div>
+    <Switch>
+      <Route path={`${match.path}/:id`}>
+        <BlogDetails blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} />
+      </Route>
+
+      <Route path={match.path}>
+        <Toggleable buttonLabel="new note" ref={blogFormRef}>
+          <BlogForm createBlog={createBlog} />
+        </Toggleable>
+        <BlogList blogs={blogs} loggedInUser={loggedInUser} />
+      </Route>
+    </Switch>
   );
 };
 

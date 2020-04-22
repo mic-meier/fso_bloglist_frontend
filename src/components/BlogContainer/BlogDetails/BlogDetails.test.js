@@ -1,9 +1,9 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { render, fireEvent } from "@testing-library/react";
-import Blog from "./Blog";
+import BlogDetails from "./BlogDetails";
 
-describe("<Blog />", () => {
+describe("<BlogDetails />", () => {
   let component;
   let mockLikeHandler;
 
@@ -20,45 +20,31 @@ describe("<Blog />", () => {
       },
     };
 
-    const user = {
-      username: "Batman",
-      name: "Bruce Wayne",
-      id: 1,
-    };
-
     mockLikeHandler = jest.fn();
 
     component = render(
-      <Blog
+      <BlogDetails
         blog={blog}
-        user={user}
         likeBlog={mockLikeHandler}
         deleteBlog={mockLikeHandler}
       />
     );
   });
 
-  test("renders blog title and author, but does not render url and number of likes", () => {
+  test("renders blog title", () => {
     expect(component.container).toHaveTextContent("Testing Blog");
-    expect(component.container).toHaveTextContent("Testing Author");
-    expect(component.container).not.toHaveTextContent("Testing URL");
-    expect(component.container).not.toHaveTextContent("likes");
   });
-
-  test("renders blog's url and number of likes when the button controlling the detailedView is clicked", () => {
-    const button = component.container.querySelector(".detailsButton");
-    fireEvent.click(button);
-
-    expect(component.container).toHaveTextContent("Testing Blog");
+  test("renders blog author", () => {
     expect(component.container).toHaveTextContent("Testing Author");
-    expect(component.container).toHaveTextContent("Testing URL");
+  });
+  test("renders blog url", () => {
+    expect(component.container).toHaveTextContent("likes");
+  });
+  test("renders blog likes", () => {
     expect(component.container).toHaveTextContent("likes");
   });
 
   test("fires event handler for handling likes twice if button is clicked twice", () => {
-    const detailButton = component.container.querySelector(".detailsButton");
-    fireEvent.click(detailButton);
-
     const likeButton = component.container.querySelector(".likeButton");
     fireEvent.click(likeButton);
     fireEvent.click(likeButton);
