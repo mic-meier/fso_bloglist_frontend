@@ -3,10 +3,7 @@ import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
 
-// redux rewrite imports
 import { useDispatch, useSelector } from "react-redux";
 import {
   initializeBlogs,
@@ -15,42 +12,29 @@ import {
   likeABlog,
 } from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
+import { getLoggedInUser, signIn } from "./redux/reducers/userReducer";
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Initialize blogs in redux store
+  // Initialize blogs and userin redux store
   const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(initializeBlogs());
   }, [dispatch]);
 
-  const blogs = useSelector((state) => state.blogs);
-
   useEffect(() => {
-    const loggedInUser = window.localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
+    dispatch(getLoggedInUser());
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-
-      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
+      dispatch(signIn(username, password));
       setUsername("");
       setPassword("");
     } catch (error) {
@@ -166,7 +150,6 @@ const App = () => {
       <BlogForm createBlog={createBlog} />
     </Toggleable>
   );
-
   if (user === null) {
     return (
       <div>
