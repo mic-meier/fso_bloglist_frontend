@@ -13,6 +13,7 @@ import LoggedInUser from "./components/LoggedInUser";
 import Loginform from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
+import UserDetails from "./components/UserDetails";
 import UsersList from "./components/UsersList";
 import { initializeBlogs, createABlog } from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
@@ -72,6 +73,9 @@ const App = () => {
       <h2>blogs</h2>
       <LoggedInUser user={loggedInUser} />
       <Switch>
+        <Route path="/users/:id">
+          <UserDetails users={users} />
+        </Route>
         <Route path="/users">
           <UsersList users={users} />
         </Route>
