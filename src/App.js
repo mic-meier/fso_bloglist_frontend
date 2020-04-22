@@ -23,6 +23,7 @@ import { initializeUsers } from "./redux/reducers/userReducer";
 const App = () => {
   // Initialize blogs and userin redux store
   const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs);
   const loggedInUser = useSelector((state) => state.loggedInUser);
   const users = useSelector((state) => state.users);
 
@@ -84,7 +85,7 @@ const App = () => {
           <Toggleable buttonLabel="new note" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
           </Toggleable>
-          <BlogList />
+          <BlogList blogs={blogs} loggedInUser={loggedInUser} />
         </Route>
       </Switch>
     </div>

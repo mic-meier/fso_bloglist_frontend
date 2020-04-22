@@ -1,13 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deleteABlog, likeABlog } from "../redux/reducers/blogReducer";
 import { setNotification } from "../redux/reducers/notificationReducer";
 import Blog from "./Blog";
 
-const BlogList = () => {
+const BlogList = ({ blogs, loggedInUser }) => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
-  const loggedInUser = useSelector((state) => state.loggedInUser);
 
   const likeBlog = (blogObject) => {
     const blogToUpdate = {
