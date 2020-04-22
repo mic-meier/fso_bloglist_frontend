@@ -13,26 +13,19 @@ import LoggedInUser from "./components/LoggedInUser";
 import Loginform from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
-import UserDetails from "./components/UserDetails";
-import UsersList from "./components/UsersList";
+import UsersContainer from "./components/UsersContainer/UsersContainer";
 import { initializeBlogs, createABlog } from "./redux/reducers/blogReducer";
 import { setNotification } from "./redux/reducers/notificationReducer";
 import { getLoggedInUser } from "./redux/reducers/loggedInUserReducer";
-import { initializeUsers } from "./redux/reducers/userReducer";
 
 const App = () => {
   // Initialize blogs and userin redux store
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const loggedInUser = useSelector((state) => state.loggedInUser);
-  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(initializeBlogs());
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(initializeUsers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -74,11 +67,8 @@ const App = () => {
       <h2>blogs</h2>
       <LoggedInUser user={loggedInUser} />
       <Switch>
-        <Route path="/users/:id">
-          <UserDetails users={users} />
-        </Route>
         <Route path="/users">
-          <UsersList users={users} />
+          <UsersContainer />
         </Route>
         <Route path="/">
           <Notification />

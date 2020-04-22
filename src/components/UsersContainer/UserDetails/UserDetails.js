@@ -1,9 +1,6 @@
 import React from "react";
-import { useRouteMatch } from "react-router-dom";
 
-const UserDetails = ({ users }) => {
-  const match = useRouteMatch("/users/:id");
-  const user = match ? users.find((user) => user.id === match.params.id) : null;
+const UserDetails = ({ user }) => {
   if (!user) {
     return null;
   }
