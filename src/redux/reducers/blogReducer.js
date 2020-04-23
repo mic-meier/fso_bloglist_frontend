@@ -1,4 +1,5 @@
 import blogService from "../../services/blogs";
+import { setNotification } from "../reducers/notificationReducer";
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -34,11 +35,15 @@ export const initializeBlogs = () => {
 
 export const createABlog = (data) => {
   return async (dispatch) => {
-    const newBlog = await blogService.createBlog(data);
-    dispatch({
-      type: "CREATE",
-      data: newBlog,
-    });
+    try {
+      const newBlog = await blogService.createBlog(data);
+      dispatch({
+        type: "CREATE",
+        data: newBlog,
+      });
+    } catch (error) {
+      dispatch(setNotification("Blogdetails missing", "error", 2));
+    }
   };
 };
 

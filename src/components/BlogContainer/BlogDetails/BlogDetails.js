@@ -1,8 +1,6 @@
 import React from "react";
 
 const BlogDetails = ({ blog, likeBlog, deleteBlog }) => {
-  console.log("likeABog", likeBlog);
-  console.log("deleteBlog", deleteBlog);
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,

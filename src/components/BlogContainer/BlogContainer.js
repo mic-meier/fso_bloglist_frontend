@@ -11,6 +11,7 @@ import { setNotification } from "../../redux/reducers/notificationReducer";
 import BlogDetails from "./BlogDetails/BlogDetails";
 import BlogForm from "./BlogForm/BlogForm";
 import BlogList from "./BlogList/BlogList";
+import Notification from "../Notification";
 import Toggleable from "./Toggleable/Toggleable";
 
 const BlogContainer = () => {
@@ -97,10 +98,13 @@ const BlogContainer = () => {
   return (
     <Switch>
       <Route path={`${match.path}/:id`}>
+        <Notification />
         <BlogDetails blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} />
       </Route>
 
       <Route path={match.path}>
+        <h2>Blogs</h2>
+        <Notification />
         <Toggleable buttonLabel="new note" ref={blogFormRef}>
           <BlogForm createBlog={createBlog} />
         </Toggleable>
