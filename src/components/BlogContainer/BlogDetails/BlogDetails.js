@@ -1,6 +1,7 @@
 import React from "react";
+import BlogCommentForm from "./BlogCommentForm/BlogCommentForm";
 
-const BlogDetails = ({ blog, likeBlog, deleteBlog }) => {
+const BlogDetails = ({ blog, likeBlog, deleteBlog, handleCommenting }) => {
   if (!blog) {
     return null;
   }
@@ -20,6 +21,7 @@ const BlogDetails = ({ blog, likeBlog, deleteBlog }) => {
       <div>added by {blog.user.name}</div>
       <button onClick={() => deleteBlog(blog)}>delete</button>
       <h3>Comments</h3>
+      <BlogCommentForm handleCommenting={handleCommenting} blog={blog} />
       <ul>
         {blog.comments.map((comment, i) => (
           <li key={i}>{comment}</li>

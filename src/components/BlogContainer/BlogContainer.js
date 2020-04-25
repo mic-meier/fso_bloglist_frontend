@@ -4,6 +4,7 @@ import { Switch, Route, useHistory, useRouteMatch } from "react-router-dom";
 import {
   initializeBlogs,
   createABlog,
+  commentOnABlog,
   likeABlog,
   deleteABlog,
 } from "../../redux/reducers/blogReducer";
@@ -95,11 +96,26 @@ const BlogContainer = () => {
     }
   };
 
+  const handleCommenting = (comment, id) => {
+    const body = { comment: comment };
+
+    try {
+      dispatch(commentOnABlog(body, id));
+    } catch (error) {
+      dispatch(setNotification(error.message, "error", 2));
+    }
+  };
+
   return (
     <Switch>
       <Route path={`${match.path}/:id`}>
         <Notification />
-        <BlogDetails blog={blog} likeBlog={likeBlog} deleteBlog={deleteBlog} />
+        <BlogDetails
+          blog={blog}
+          likeBlog={likeBlog}
+          deleteBlog={deleteBlog}
+          handleCommenting={handleCommenting}
+        />
       </Route>
 
       <Route path={match.path}>
